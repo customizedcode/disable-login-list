@@ -1,0 +1,51 @@
+---
+# tasks file for disable-login-list
+
+  - name: add disable-user-list
+    template:
+      src: greeter.dconf-defaults.j2 
+      dest: /etc/dconf/db/local.d/00-login-screen
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+    when: ansible_os_family == "RedHat"
+
+  - name: add disable Gnome initial setup for users
+    dnf:
+      name: gnome-initial-setup
+      state: absent
+    when: ansible_os_family == "RedHat"
+
+  - name: add disable Gnome initial setup for users (debian)
+    apt:
+      name: gnome-initial-setup
+      state: absent
+    when: ansible_os_family == "Debian"
+
+  - name: add gdm profile message (Debian)
+    template:
+      src: gdm.j2
+      dest: /etc/motd
+      owner: root
+      group: root
+      force: yes
+      mode: u=rw,g=r,o=r
+    when: ansible_os_family == "Debian"
+
+  - name: add disable-user-list (Debian)
+    template:
+      src: greeter.dconf-defaults.j2
+      dest: /etc/gdm3/greeter.dconf-defaults
+      owner: root
+      group: root
+      mode: u=rw,g=r,o=r
+    when: ansible_os_family == "Debian"
+
+  - name: update dconf
+    shell: dconf update
+
+  - name: restart gdm
+    systemd:
+      state: restarted
+      name: gdm
+

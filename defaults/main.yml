@@ -1,0 +1,6 @@
+---
+# defaults file for disable-login-list
+
+disable_user_list_var: 'true'
+banner_message_enable_var: 'true'
+banner_message_var: 'Customized Technology\n     Customized.local \n Authorized Users Only. \n********************'
